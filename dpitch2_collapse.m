@@ -23,19 +23,28 @@ if NBIN > 0
 end
 
 % Some preprocessing - convolve with smoothing window
-smoohwin = 2;
-smoo = 2*smoohwin+1;
-smwin = hann(smoo+2)';
-smwin = smwin(2:end-1);
-Ys = conv2(smwin, Y);
-Ys = Ys(:,1+smoohwin:end-smoohwin);
-
+DOSMOOTH = 1;
+if DOSMOOTH
+  smoohwin = 2;
+  smoo = 2*smoohwin+1;
+  smwin = hann(smoo+2)';
+  smwin = smwin(2:end-1);
+  Ys = conv2(smwin, Y);
+  Ys = Ys(:,1+smoohwin:end-smoohwin);
+else
+  Ys = Y;
+end
+  
 % Raise to a power to increase dominance of peak values
-ep = 2.0;
-Y = Ys.^ep;
+%ep = 2.0;
+%Y = Ys.^ep;
+% Now Y is bipolar; best to make it positive before taking moments,
+% and exponentiation also emphasizes peak
+escale = 1.0;
+Y = exp(Ys/escale);
 
 % First dimension - "spectral entropy" crest factor
-p = 2;
+%p = 2;
 %F0 = (mean(Y.^p)).^(1/p) / mean(Y);
 
 % .. or just first moment

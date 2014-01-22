@@ -32,6 +32,11 @@ DL = wts * abs(D);
 
 [nbins, nframes] = size(DL);
 
+% local mean and variance normalization on each spectrum
+mvnormwin = 48;
+DL = localmvnorm(DL', mvnormwin)';
+
+
 % Record frame-on-frame xcorr
 
 delay = 2;
