@@ -53,3 +53,26 @@ hold off
 % Line up and zoom in
 linkaxes([subplot(311),subplot(312),subplot(313)], 'x')
 axis([196 200 -5 10])
+
+
+%% Bulk calculation
+%
+% Say you want to calculate this feature for a whole directory full
+% of Babel utterances.  Here's how:
+
+corpus = 'BABEL_OP1_102_LLP';
+babelcorproot = '/u/drspeech/data/swordfish/corpora';
+wavdevdir = fullfile(babelcorproot, corpus, 'conversational/dev/audio');
+wavtrndir = fullfile(babelcorproot, corpus, 'conversational/training/audio');
+ftrdevdir = fullfile(corpus, 'dev/dpitch');
+ftrtrndir = fullfile(corpus, 'training/dpitch');
+mymkdir(ftrdevdir);
+mymkdir(ftrtrndir);
+dpitch2_processdir(wavtrndir, ftrtrndir);
+dpitch2_processdir(wavdevdir, ftrdevdir);
+ftr2devdir = fullfile(corpus, 'dev/dpflow');
+ftr2trndir = fullfile(corpus, 'training/dpflow');
+mymkdir(ftr2devdir);
+mymkdir(ftr2trndir);
+dpitch2_reprocessdir(ftrdevdir, ftr2devdir);
+dpitch2_reprocessdir(ftrtrndir, ftr2trndir);
