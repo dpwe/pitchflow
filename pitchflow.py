@@ -103,13 +103,11 @@ def localmvnorm(X,W):
 
     (bins, frames) = np.shape(X)
 
-    print 'size(X)=',bins,'bins x',frames,'frames W=',W
+    #print 'size(X)=',bins,'bins x',frames,'frames W=',W
 
     # Pad with reflections at ends for off-the end continuity
     padpoints = np.floor(W/2)
     Xpad = np.r_[ X[padpoints:0:-1,],X,X[:-padpoints-1:-1,] ]
-
-    print np.shape(Xpad)
 
     (padbins, frames) = np.shape(Xpad)
 
@@ -120,10 +118,8 @@ def localmvnorm(X,W):
     whlen = int(np.floor((W-1)/2))
 
     MAmean = convbyrow(win, Xpad.T).T
-    print np.shape(MAmean)
     MAmean = MAmean[whlen:whlen+padbins,:]
     MAvar  = convbyrow(win, np.square(Xpad-MAmean).T).T
-    print np.shape(MAvar)
     MAmean = MAmean[padpoints:padpoints+bins,:]
     MAstd  = np.sqrt(MAvar[whlen+padpoints : whlen+padpoints+bins,:])
 
@@ -164,8 +160,6 @@ def pitchflow(d, sr):
     wts, frqs = fft2logfmx(nfft, sr, nbins, width, fmin, bpo)
 
     # log-f sgram
-    print np.shape(wts)
-    print np.shape(D)
     DL = np.dot(wts, D.T)
 
     (nbins, nframes) = np.shape(DL)
@@ -252,66 +246,17 @@ def pitchflow_collapse(Y, NBIN=0):
     F2 = np.sqrt(np.mean(Y.T*np.square(lags), axis=1) / F0 - np.square(F1))
 
     ftrs = np.c_[F0,F1,F2]
-    print np.shape(ftrs)
 
     return ftrs
 
 ############## Provide a command-line wrapper
 
-# from 
-# http://my.fit.edu/~vkepuska/ece5526/SPHINX/SphinxTrain/python/sphinx/htkmfc.py
-from struct import unpack, pack
-
-class HTKFeat_write(object):
-    "Write Sphinx-II format feature files"
-    def __init__(self, filename=None,
-                 veclen=13, sampPeriod=100000,
-                 paramKind = 9):
-        self.veclen = veclen
-        self.sampPeriod = sampPeriod
-        self.sampSize = veclen * 4
-        self.paramKind = paramKind
-        self.dtype = 'f'
-        self.filesize = 0
-        self.swap = (unpack('=i', pack('>i', 42))[0] != 42)
-        if (filename != None):
-            self.open(filename)
-
-    def __del__(self):
-        self.close()
-
-    def open(self, filename):
-        self.filename = filename
-        self.fh = file(filename, "wb")
-        self.writeheader()
-
-    def close(self):
-        self.writeheader()
-
-    def writeheader(self):
-        self.fh.seek(0,0)
-        self.fh.write(pack(">IIHH", self.filesize,
-                           self.sampPeriod,
-                           self.sampSize,
-                           self.paramKind))
-
-    def writevec(self, vec):
-        if len(vec) != self.veclen:
-            raise Exception("Vector length must be %d" % self.veclen)
-        if self.swap:
-            np.array(vec, self.dtype).byteswap().tofile(self.fh)
-        else:
-            np.array(vec, self.dtype).tofile(self.fh)
-        self.filesize = self.filesize + self.veclen
-
-    def writeall(self, arr):
-        for row in arr:
-            self.writevec(row)
+import HTKfile
 
 def writehtk(filename, features):
     """ write array of features to HTK file """
     rows, veclen = np.shape(features)
-    writer = HTKFeat_write(filename, veclen)
+    writer = HTKfile.writer(filename, veclen)
     writer.writeall(features)
 
 def main(argv):
@@ -334,7 +279,7 @@ def main(argv):
 
     # Write the htk data out
     writehtk(outhtkfile, ftrs)
-    print "Wrote ", outhtkfile
+    print "Wrote", outhtkfile
 
 # Actually run main
 if __name__ == "__main__":
