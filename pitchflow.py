@@ -252,6 +252,8 @@ def pitchflow_collapse(Y, NBIN=0):
 ############## Provide a command-line wrapper
 
 import HTKfile
+from scikits.audiolab import Sndfile
+import os
 
 def writehtk(filename, features):
     """ write array of features to HTK file """
@@ -259,22 +261,41 @@ def writehtk(filename, features):
     writer = HTKfile.writer(filename, veclen)
     writer.writeall(features)
 
+def readsph(filename):
+    """ read in audio data from a sphere file.  Return d, sr """
+    f = Sndfile(filename, 'r')
+    data = f.read_frames(f.nframes, dtype=np.float32)
+    sr = f.samplerate
+    return data, sr
+
+def readwav(filename):
+    """ read in audio data from a wav file.  Return d, sr """
+    # Read in wav file
+    sr, wavd = wav.read(filename)
+    # normalize short ints to floats of -1 / 1
+    data = np.asfarray(wavd) / 32768.0  
+    return data, sr
+
 def main(argv):
     """ Main routine to apply pitchflow from command line """
     if len(argv) != 3:
-        raise NameError( ("Usage: ", argv[0], 
+        raise NameError( ("Usage: " + argv[0] + 
                           " inputsound.wav outftrs.htk") )
 
     inwavfile = argv[1]
     outhtkfile = argv[2]
 
-    # Read in wav file
-    srate, wavd = wav.read(inwavfile)
-    # normalize short ints to floats of -1 / 1
-    data = np.asfarray(wavd) / 32768.0  
+    fileName, fileExtension = os.path.splitext(inwavfile)
+    if fileExtension == ".wav":
+        data, sr = readwav(inwavfile)
+    elif fileExtension == ".sph":
+        data, sr = readsph(inwavfile)
+    else:
+        raise NameError( ("Cannot determine type of infile " +
+                          inwavfile) )
 
     # Apply
-    ftrs1 = pitchflow(data, srate)
+    ftrs1 = pitchflow(data, sr)
     ftrs = pitchflow_collapse(ftrs1)
 
     # Write the htk data out
