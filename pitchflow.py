@@ -192,7 +192,7 @@ def pitchflow(d, sr):
 
 def pitchflow_collapse(Y, NBIN=0):
     """ 
-    F = dpitch2_collapse(Y)
+    F = pitchflow_collapse(Y)
     Y is a set of column feature vectors indicating pitchflow from
     dpitch.  Collapse these 25 (?) dimensional vectors into 2 or 3
     summary dimensions - something on peakiness, something on

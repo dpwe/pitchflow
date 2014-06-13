@@ -1,6 +1,6 @@
-function dpitch2_reprocessdir(indir, outdir)
-% dpitch2_reprocessdir(indir, outdir)
-%   Rerocess an entire directory of dpitch2 features, and collapse
+function pitchflow_reprocessdir(indir, outdir)
+% pitchflow_reprocessdir(indir, outdir)
+%   Rerocess an entire directory of pitchflow features, and collapse
 %   to 3-dim moments.
 % 2014-01-16 Dan Ellis dpwe@ee.columbia.edu
 
@@ -16,7 +16,7 @@ for i = 1:length(fdir)
 
   % Process
   [D,FP,DT,TC,T] = readhtk(inhtk);
-  dpftr = dpitch2_collapse(D');
+  dpftr = pitchflow_collapse(D');
   writehtk(outhtk, dpftr', FP, TC);
 
   disp(['Wrote ', outhtk]);

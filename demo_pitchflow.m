@@ -1,4 +1,4 @@
-%% DPITCH2 - direct calculation of delta-pitch
+%% PITCHFLOW - direct calculation of delta-pitch
 %
 % Pitch is helpful in speech recogntion, but most often it is not
 % the absolute pitch that is used (since this varies a lot by
@@ -19,7 +19,7 @@
 %% Example
 
 % Load a sound file
-[d,sr] = audioread(['/Users/drspeech/data/swordfish/code/ehist/' ...
+[d,sr] = audioread(['/u/drspeech/data/swordfish/code/ehist/' ...
                     'BABEL_OP1_206_65882_20121201_174526_outLine.sph']);
 
 % Plot its log-frequency spectrogram
@@ -28,7 +28,7 @@ logfsgram(d,256,sr);
 caxis([-30 30]);
 
 % Calculate the normalized cross-correlation of adjacent log-f spectra
-sxc = dpitch2(d, sr);
+sxc = pitchflow(d, sr);
 
 subplot(312)
 tt = [0:(size(sxc,2)-1)]*0.010;
@@ -38,7 +38,7 @@ grid
 
 % Collapse each excerpt from the cross-corrletions into 3 features,
 % the first three moments of the exponentiated NCC
-dpf = dpitch2_collapse(sxc);
+dpf = pitchflow_collapse(sxc);
 
 subplot(313)
 plot(tt, dpf);
@@ -68,11 +68,30 @@ ftrdevdir = fullfile(corpus, 'dev/dpitch');
 ftrtrndir = fullfile(corpus, 'training/dpitch');
 mymkdir(ftrdevdir);
 mymkdir(ftrtrndir);
-dpitch2_processdir(wavtrndir, ftrtrndir);
-dpitch2_processdir(wavdevdir, ftrdevdir);
+pitchflow_processdir(wavtrndir, ftrtrndir);
+pitchflow_processdir(wavdevdir, ftrdevdir);
 ftr2devdir = fullfile(corpus, 'dev/dpflow');
 ftr2trndir = fullfile(corpus, 'training/dpflow');
 mymkdir(ftr2devdir);
 mymkdir(ftr2trndir);
-dpitch2_reprocessdir(ftrdevdir, ftr2devdir);
-dpitch2_reprocessdir(ftrtrndir, ftr2trndir);
+pitchflow_reprocessdir(ftrdevdir, ftr2devdir);
+pitchflow_reprocessdir(ftrtrndir, ftr2trndir);
+
+%% Python Port
+%
+% The full pitchflow feature calculation pipeline has been ported
+% to Python.  See the
+% <https://github.com/dpwe/pitchflow pitchflow> package on GitHub.
+
+%% Changelog
+%
+
+% 2014-02-11 v0.1  Cleaned up and added full "matlab publish" output
+%
+% 2014-01-28 v0.0  Initial release
+%
+
+%% Acknowledgment
+%
+% This work was supported by IARPA under the Babel program via a 
+% subcontract from the ICSI-led team Swordfish

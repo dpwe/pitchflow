@@ -1,5 +1,5 @@
-function F = dpitch2_collapse(Y, NBIN)
-% F = dpitch2_collapse(Y)
+function F = pitchflow_collapse(Y, NBIN)
+% F = pitchflow_collapse(Y)
 %    Y is a set of column feature vectors indicating pitchflow from
 %    dpitch.  Collapse these 25 (?) dimensional vectors into 2 or 3
 %    summary dimensions - something on peakiness, something on

@@ -1,5 +1,5 @@
-function Y = dpitch2(d,sr,P,doplot)
-% Y = dpitch2(d,sr,P,doplot)
+function Y = pitchflow(d,sr,P,doplot)
+% Y = pitchflow(d,sr,P,doplot)
 %   Second version of delta-pitch features.
 %   Simply calculate a spectrogram
 %   and take cross-correlation of successive spectra

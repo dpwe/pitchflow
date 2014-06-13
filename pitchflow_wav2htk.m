@@ -1,5 +1,5 @@
-function dpitch2_wav2htk(infile, outfile)
-% dpitch2_wav2htk(infile, outfile)
+function pitchflow_wav2htk(infile, outfile)
+% pitchflow_wav2htk(infile, outfile)
 %   Write a new HTK file of features for a particular input audio
 %   file, where the features are the 25-dim spectral
 %   cross-correlation features.
@@ -23,7 +23,7 @@ disp(sprintf('t_pad = %.1f ms', 1000*t_pad));
 dp = [zeros(round(t_pad*sr),1); d; zeros(round(t_pad*sr),1)];
 
 % Calculate delta-pitch features
-dpftr = dpitch2(dp, sr, P);
+dpftr = pitchflow(dp, sr, P);
 
 % Write out HTK format
 typecode = 9; % "User"
