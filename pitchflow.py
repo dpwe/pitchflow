@@ -144,11 +144,14 @@ def pitchflow(d, sr):
     twin = 0.032
     thop = 0.010
 
-    nfft = np.power(2.0, np.round(np.log(twin*sr)/np.log(2.0)))
+    nwin = np.round(twin * sr)
+    nfft = np.power(2.0, np.ceil(np.log(twin*sr)/np.log(2.0)))
     nhop = np.round(thop * sr)
 
+    #print "nfft=",nfft,"twin= %0.3f s"%(nfft/float(sr))
+
     # Calculate base spectrogram
-    D = stftm(d, nfft, nfft, nhop)
+    D = stftm(d, nfft, nwin, nhop)
 
     # Convert to log-freq axis
     bpo  = 24
