@@ -123,7 +123,7 @@ def localmvnorm(X,W):
     MAmean = MAmean[padpoints:padpoints+bins,:]
     MAstd  = np.sqrt(MAvar[whlen+padpoints : whlen+padpoints+bins,:])
 
-    return (X-MAmean) /MAstd
+    return (X-MAmean) / (MAstd + (MAstd==0))
 
 def xcorr(a, b, halfwidth):
     """ cross-correlate a and b, returning points out to +/- halfwidth """
@@ -189,7 +189,7 @@ def pitchflow(d, sr):
     # Keep central bin as normalizing constant
     #midbin = halfwidth
     #Y0 = mxmd[midbin,]
-    Y = mxmd/mxmw
+    Y = mxmd/(mxmw + (mxmw==0))
 
     return Y
 
